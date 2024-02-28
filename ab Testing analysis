@@ -1,0 +1,34 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+from datetime import datetime
+from sklearn.linear_model import LinearRegression as LR
+from scipy.stats import fisher_exact
+control_data = pd.read_csv("/content/control_group.csv", sep = ";")
+test_data = pd.read_csv("/content/test_group.csv", sep = ";")
+control_data.head()
+control_data.columns=['Name', 'Date', 'Spend', 'Impressions', 'Reach',
+       'Website Clicks', 'Searches', 'View Content',
+       'Cart', 'Purchase']
+test_data.columns=['Name', 'Date', 'Spend', 'Impressions', 'Reach',
+       'Website Clicks', 'Searches', 'View Content',
+       'Cart', 'Purchase']
+print((test_data['Date']==control_data['Date']).sum()/len(control_data))
+for col in control_data.columns:
+    print(col)
+    print(control_data[col].isnull().sum(), ' out of ', len(control_data))
+    print(control_data[col].isnull().sum()/len(control_data)*100)
+for col in control_data.columns[3:]:
+    plt.scatter(control_data['Spend'],control_data[col])
+    lr=LR()
+    not_drop=control_data[col].notna()
+    y=np.array(control_data[col][not_drop]).reshape(-1, 1)
+    X=np.array(control_data['Spend'][not_drop]).reshape(-1, 1)
+    lr=lr.fit(X=X,y=y)
+    plt.plot(control_data['Spend'],lr.predict(np.array(control_data['Spend']).reshape(-1, 1)))
+    plt.xlabel('Spending')
+    plt.ylabel(col)
+    plt.show()
+
+
