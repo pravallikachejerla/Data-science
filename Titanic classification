@@ -1,0 +1,9 @@
+import pandas as pd
+from numpy import NaN
+
+df = pd.read_csv("/content/titanic.csv")
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_rows', None)
+print(df.head())
+df.drop(['Fare'],axis=1)
+print(df.info())
